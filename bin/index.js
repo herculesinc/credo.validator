@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 // BASE EXCEPTION DEFINITION
 // ================================================================================================
 class Exception extends Error {
@@ -62,6 +62,13 @@ class UnsupportedContentException extends Exception {
     }
 }
 exports.UnsupportedContentException = UnsupportedContentException;
+class NotReadyException extends Exception {
+    constructor(message) {
+        super(message, 425, false);
+        this.name = 'Not Ready';
+    }
+}
+exports.NotReadyException = NotReadyException;
 class TooManyRequestsException extends Exception {
     constructor(message) {
         super(message, 429, false);
@@ -122,5 +129,9 @@ exports.validate.accepts = function (condition, message) {
 exports.validate.allowed = function (condition, message) {
     if (!condition)
         throw new ForbiddenException(message);
+};
+exports.validate.ready = function (condition, message) {
+    if (!condition)
+        throw new NotReadyException(message);
 };
 //# sourceMappingURL=index.js.map

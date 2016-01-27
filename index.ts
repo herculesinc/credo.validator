@@ -1,4 +1,3 @@
-'use strict';
 // INTERFACES
 // ================================================================================================
 export interface Validator {
@@ -9,6 +8,7 @@ export interface Validator {
     content?    : (condition: any, message: string) => void;
     accepts?    : (condition: any, message: string) => void;
     allowed?    : (condition: any, message: string) => void;
+    ready?      : (condition: any, message: string) => void;
 }
 
 // BASE EXCEPTION DEFINITION
@@ -79,6 +79,13 @@ export class UnsupportedContentException extends Exception {
     }
 }
 
+export class NotReadyException extends Exception {
+    constructor(message: string) {
+        super(message, 425, false);
+        this.name = 'Not Ready';
+    }
+}
+
 export class TooManyRequestsException extends Exception {
     constructor(message: string) {
         super(message, 429, false);
@@ -142,4 +149,8 @@ validate.accepts = function (condition: any, message: string) {
 
 validate.allowed = function (condition: any, message: string) {
     if (!condition) throw new ForbiddenException(message);
+}
+
+validate.ready = function (condition: any, message: string) {
+    if (!condition) throw new NotReadyException(message);
 }
