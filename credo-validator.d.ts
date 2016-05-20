@@ -38,6 +38,10 @@ declare module "@credo/validator" {
 		constructor(message: string);
 	}
 	
+	export class NotReadyException extends Exception {
+		constructor(message: string);
+	}
+	
 	export class TooManyRequestsException extends Exception {
 		constructor(message: string);
 	}
@@ -63,6 +67,7 @@ declare module "@credo/validator" {
 		content?    : (condition: any, message?: string) => void;
 		accepts?    : (condition: any, message?: string) => void;
 		allowed?    : (condition: any, message?: string) => void;
+		ready?      : (condition: any, message?: string) => void;
 	}
 	
 	export var validate: Validator;
