@@ -32,63 +32,63 @@ export class Exception extends Error {
 // ================================================================================================
 export class BadRequestException extends Exception {
 	constructor(message: string) {
-		super(message, 400, false);
+		super(message || 'Bad Request', 400, false);
 		this.name = 'Bad Request';
 	}
 }
 
 export class UnauthorizedException extends Exception {
     constructor(message: string) {
-        super(message, 401, false);
+        super(message || 'Unauthorized', 401, false);
         this.name = 'Unauthorized';
     }
 }
 
 export class ForbiddenException extends Exception {
     constructor(message: string) { 
-        super(message, 403, false);
+        super(message || 'Forbidden', 403, false);
         this.name = 'Forbidden';
     }
 }
 
 export class NotFoundException extends Exception {
     constructor(message: string) { 
-        super(message, 404, false);
+        super(message || 'Not Found', 404, false);
         this.name = 'Not Found';
     }
 }
 
 export class NotAllowedException extends Exception {
     constructor(message: string) {
-        super(message, 405, false);
+        super(message || 'Method Not Allowed', 405, false);
         this.name = 'Method Not Allowed';
     }
 }
 
 export class NotAcceptableException extends Exception {
     constructor(message: string) {
-        super(message, 406, false);
+        super(message || 'Not Acceptable', 406, false);
         this.name = 'Not Acceptable';
     }
 }
 
 export class UnsupportedContentException extends Exception {
     constructor(message: string) {
-        super(message, 415, false);
+        super(message || 'Unsupported Media Type', 415, false);
         this.name = 'Unsupported Media Type';
     }
 }
 
 export class NotReadyException extends Exception {
     constructor(message: string) {
-        super(message, 425, false);
+        super(message || 'Not Ready', 425, false);
         this.name = 'Not Ready';
     }
 }
 
 export class TooManyRequestsException extends Exception {
     constructor(message: string) {
-        super(message, 429, false);
+        super(message || 'Too Many Requests', 429, false);
         this.name = 'Too Many Requests';
     }
 }
@@ -122,35 +122,59 @@ export class ServiceUnavailableError extends Exception {
 
 // VALIDATORS
 // ================================================================================================
-export var validate: Validator = function(condition: any, message: string, isCritical?: boolean) {
+export var validate: Validator = function(condition: any, message?: string, isCritical?: boolean) {
     isCritical = typeof isCritical === 'boolean' ? isCritical : false ;
-    if (!condition) throw new InternalServerError(message, isCritical);
+    if (condition) {
+        if (condition instanceof Error)
+            throw new InternalServerError(message || condition.message, isCritical);
+    } else throw new InternalServerError(message, isCritical);
 } 
 
-validate.request = function (condition: any, message: string) {
-    if (!condition) throw new BadRequestException(message);
+validate.request = function (condition: any, message?: string) {
+    if (condition) {
+        if (condition instanceof Error)
+            throw new BadRequestException(message || condition.message);
+    } else throw new BadRequestException(message);
 }
 
-validate.exists = function (condition: any, message: string) {
-    if (!condition) throw new NotFoundException(message);
+validate.exists = function (condition: any, message?: string) {
+    if (condition) {
+        if (condition instanceof Error)
+            throw new NotFoundException(message || condition.message);
+    } else throw new NotFoundException(message);
 }
 
-validate.authorized = function (condition: any, message: string) {
-    if (!condition) throw new UnauthorizedException(message);
+validate.authorized = function (condition: any, message?: string) {
+    if (condition) {
+        if (condition instanceof Error)
+            throw new UnauthorizedException(message || condition.message);
+    } else throw new UnauthorizedException(message);
 }
     
-validate.content = function (condition: any, message: string) {
-    if (!condition) throw new UnsupportedContentException(message);
+validate.content = function (condition: any, message?: string) {
+    if (condition) {
+        if (condition instanceof Error)
+            throw new UnsupportedContentException(message || condition.message);
+    } else throw new UnsupportedContentException(message);
 }
     
-validate.accepts = function (condition: any, message: string) {
-    if (!condition) throw new NotAcceptableException(message);
+validate.accepts = function (condition: any, message?: string) {
+    if (condition) {
+        if (condition instanceof Error)
+            throw new NotAcceptableException(message || condition.message);
+    } else throw new NotAcceptableException(message);
 }
 
-validate.allowed = function (condition: any, message: string) {
-    if (!condition) throw new ForbiddenException(message);
+validate.allowed = function (condition: any, message?: string) {
+    if (condition) {
+        if (condition instanceof Error)
+            throw new ForbiddenException(message || condition.message);
+    } else throw new ForbiddenException(message);
 }
 
-validate.ready = function (condition: any, message: string) {
-    if (!condition) throw new NotReadyException(message);
+validate.ready = function (condition: any, message?: string) {
+    if (condition) {
+        if (condition instanceof Error)
+            throw new NotReadyException(message || condition.message);
+    } else throw new NotReadyException(message);
 }
