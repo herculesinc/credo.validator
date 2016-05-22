@@ -1,14 +1,18 @@
 // INTERFACES
 // ================================================================================================
-export interface Validator {
+export interface BaseValidator {
     (condition: any, message: string): void;
-    request?    : (condition: any, message: string) => void;
-    exists?     : (condition: any, message: string) => void;
-    authorized? : (condition: any, message: string) => void;
-    content?    : (condition: any, message: string) => void;
-    accepts?    : (condition: any, message: string) => void;
-    allowed?    : (condition: any, message: string) => void;
-    ready?      : (condition: any, message: string) => void;
+    from?: (error: Error) => void;
+}
+
+export interface Validator extends BaseValidator {
+    request?    : BaseValidator;
+    exists?     : BaseValidator;
+    authorized? : BaseValidator;
+    content?    : BaseValidator;
+    accepts?    : BaseValidator;
+    allowed?    : BaseValidator;
+    ready?      : BaseValidator;
 }
 
 // BASE EXCEPTION DEFINITION
@@ -124,57 +128,79 @@ export class ServiceUnavailableError extends Exception {
 // ================================================================================================
 export var validate: Validator = function(condition: any, message?: string, isCritical?: boolean) {
     isCritical = typeof isCritical === 'boolean' ? isCritical : false ;
-    if (condition) {
-        if (condition instanceof Error)
-            throw new InternalServerError(message || condition.message, isCritical);
-    } else throw new InternalServerError(message, isCritical);
+    if (!condition) throw new InternalServerError(message, isCritical);
 } 
 
+validate.from = function(error: Error) {
+    if (error) throw new InternalServerError(error.message, false);
+}
+
+// REQUEST
+// ------------------------------------------------------------------------------------------------
 validate.request = function (condition: any, message?: string) {
-    if (condition) {
-        if (condition instanceof Error)
-            throw new BadRequestException(message || condition.message);
-    } else throw new BadRequestException(message);
+    if (!condition) throw new BadRequestException(message);
 }
 
+validate.request.from = function (error: Error) {
+    if (error) throw new BadRequestException(error.message);
+}
+
+// EXISTS
+// ------------------------------------------------------------------------------------------------
 validate.exists = function (condition: any, message?: string) {
-    if (condition) {
-        if (condition instanceof Error)
-            throw new NotFoundException(message || condition.message);
-    } else throw new NotFoundException(message);
+    if (!condition) throw new NotFoundException(message);
 }
 
+validate.exists.from = function (error: Error) {
+    if (error) throw new NotFoundException(error.message);
+}
+
+// AUTOHRIZED
+// ------------------------------------------------------------------------------------------------
 validate.authorized = function (condition: any, message?: string) {
-    if (condition) {
-        if (condition instanceof Error)
-            throw new UnauthorizedException(message || condition.message);
-    } else throw new UnauthorizedException(message);
+    if (!condition) throw new UnauthorizedException(message);
 }
-    
+
+validate.authorized.from = function (error: Error) {
+    if (error) throw new UnauthorizedException(error.message);
+}
+
+// CONTENT
+// ------------------------------------------------------------------------------------------------
 validate.content = function (condition: any, message?: string) {
-    if (condition) {
-        if (condition instanceof Error)
-            throw new UnsupportedContentException(message || condition.message);
-    } else throw new UnsupportedContentException(message);
+    if (!condition) throw new UnsupportedContentException(message);
 }
-    
+
+validate.content.from = function (error: Error) {
+    if (error) throw new UnsupportedContentException(error.message);
+}
+
+// ACCEPTS
+// ------------------------------------------------------------------------------------------------
 validate.accepts = function (condition: any, message?: string) {
-    if (condition) {
-        if (condition instanceof Error)
-            throw new NotAcceptableException(message || condition.message);
-    } else throw new NotAcceptableException(message);
+    if (!condition) throw new NotAcceptableException(message);
 }
 
+validate.accepts.from = function (error: Error) {
+    if (error) throw new NotAcceptableException(error.message);
+}
+
+// ALLOWED
+// ------------------------------------------------------------------------------------------------
 validate.allowed = function (condition: any, message?: string) {
-    if (condition) {
-        if (condition instanceof Error)
-            throw new ForbiddenException(message || condition.message);
-    } else throw new ForbiddenException(message);
+    if (!condition) throw new ForbiddenException(message);
 }
 
+validate.allowed.from = function (error: Error) {
+    if (error) throw new ForbiddenException(error.message);
+}
+
+// REQUEST
+// ------------------------------------------------------------------------------------------------
 validate.ready = function (condition: any, message?: string) {
-    if (condition) {
-        if (condition instanceof Error)
-            throw new NotReadyException(message || condition.message);
-    } else throw new NotReadyException(message);
+    if (!condition) throw new NotReadyException(message);
+}
+
+validate.ready.from = function (error: Error) {
+    if (error) throw new NotReadyException(error.message);
 }

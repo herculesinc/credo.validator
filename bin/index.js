@@ -103,67 +103,81 @@ exports.ServiceUnavailableError = ServiceUnavailableError;
 // ================================================================================================
 exports.validate = function (condition, message, isCritical) {
     isCritical = typeof isCritical === 'boolean' ? isCritical : false;
-    if (condition) {
-        if (condition instanceof Error)
-            throw new InternalServerError(message || condition.message, isCritical);
-    }
-    else
+    if (!condition)
         throw new InternalServerError(message, isCritical);
 };
+exports.validate.from = function (error) {
+    if (error)
+        throw new InternalServerError(error.message, false);
+};
+// REQUEST
+// ------------------------------------------------------------------------------------------------
 exports.validate.request = function (condition, message) {
-    if (condition) {
-        if (condition instanceof Error)
-            throw new BadRequestException(message || condition.message);
-    }
-    else
+    if (!condition)
         throw new BadRequestException(message);
 };
+exports.validate.request.from = function (error) {
+    if (error)
+        throw new BadRequestException(error.message);
+};
+// EXISTS
+// ------------------------------------------------------------------------------------------------
 exports.validate.exists = function (condition, message) {
-    if (condition) {
-        if (condition instanceof Error)
-            throw new NotFoundException(message || condition.message);
-    }
-    else
+    if (!condition)
         throw new NotFoundException(message);
 };
+exports.validate.exists.from = function (error) {
+    if (error)
+        throw new NotFoundException(error.message);
+};
+// AUTOHRIZED
+// ------------------------------------------------------------------------------------------------
 exports.validate.authorized = function (condition, message) {
-    if (condition) {
-        if (condition instanceof Error)
-            throw new UnauthorizedException(message || condition.message);
-    }
-    else
+    if (!condition)
         throw new UnauthorizedException(message);
 };
+exports.validate.authorized.from = function (error) {
+    if (error)
+        throw new UnauthorizedException(error.message);
+};
+// CONTENT
+// ------------------------------------------------------------------------------------------------
 exports.validate.content = function (condition, message) {
-    if (condition) {
-        if (condition instanceof Error)
-            throw new UnsupportedContentException(message || condition.message);
-    }
-    else
+    if (!condition)
         throw new UnsupportedContentException(message);
 };
+exports.validate.content.from = function (error) {
+    if (error)
+        throw new UnsupportedContentException(error.message);
+};
+// ACCEPTS
+// ------------------------------------------------------------------------------------------------
 exports.validate.accepts = function (condition, message) {
-    if (condition) {
-        if (condition instanceof Error)
-            throw new NotAcceptableException(message || condition.message);
-    }
-    else
+    if (!condition)
         throw new NotAcceptableException(message);
 };
+exports.validate.accepts.from = function (error) {
+    if (error)
+        throw new NotAcceptableException(error.message);
+};
+// ALLOWED
+// ------------------------------------------------------------------------------------------------
 exports.validate.allowed = function (condition, message) {
-    if (condition) {
-        if (condition instanceof Error)
-            throw new ForbiddenException(message || condition.message);
-    }
-    else
+    if (!condition)
         throw new ForbiddenException(message);
 };
+exports.validate.allowed.from = function (error) {
+    if (error)
+        throw new ForbiddenException(error.message);
+};
+// REQUEST
+// ------------------------------------------------------------------------------------------------
 exports.validate.ready = function (condition, message) {
-    if (condition) {
-        if (condition instanceof Error)
-            throw new NotReadyException(message || condition.message);
-    }
-    else
+    if (!condition)
         throw new NotReadyException(message);
+};
+exports.validate.ready.from = function (error) {
+    if (error)
+        throw new NotReadyException(error.message);
 };
 //# sourceMappingURL=index.js.map

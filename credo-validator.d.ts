@@ -59,16 +59,20 @@ declare module "@credo/validator" {
 	
     // VALIDATORS
     // --------------------------------------------------------------------------------------------
-	export interface Validator {
-		(condition: any, message?: string): void;
-		request?    : (condition: any, message?: string) => void;
-		exists?     : (condition: any, message?: string) => void;
-		authorized? : (condition: any, message?: string) => void;
-		content?    : (condition: any, message?: string) => void;
-		accepts?    : (condition: any, message?: string) => void;
-		allowed?    : (condition: any, message?: string) => void;
-		ready?      : (condition: any, message?: string) => void;
+	export interface BaseValidator {
+		(condition: any, message: string): void;
+		from?: (error: Error) => void;
 	}
-	
+
+	export interface Validator extends BaseValidator {
+		request?    : BaseValidator;
+		exists?     : BaseValidator;
+		authorized? : BaseValidator;
+		content?    : BaseValidator;
+		accepts?    : BaseValidator;
+		allowed?    : BaseValidator;
+		ready?      : BaseValidator;
+	}
+
 	export var validate: Validator;
 }
